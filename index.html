@@ -32,9 +32,38 @@
 
     <link rel="icon" href="assets/images/favicon.jpg">
 
+    <link rel="manifest" href="manifest.json">
+
+
 </head>
 
 <body>
+
+    <script>
+        if ("serviceWorker" in navigator) {
+          navigator.serviceWorker.register("sw.js")
+            .then((reg) => {
+              console.log("Service Worker registered!", reg);
+      
+              // Background Sync
+              if ("SyncManager" in window) {
+                navigator.serviceWorker.ready.then((swReg) => {
+                  return swReg.sync.register("sync-data");
+                });
+              }
+      
+              // Push Notifications
+              if ("PushManager" in window) {
+                Notification.requestPermission().then((permission) => {
+                  if (permission === "granted") {
+                    console.log("Push notifications allowed!");
+                  }
+                });
+              }
+            })
+            .catch((err) => console.log("Service Worker registration failed!", err));
+        }
+      </script>
 
     <!-- **** Header Section **** -->
 
